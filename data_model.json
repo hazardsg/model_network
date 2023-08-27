@@ -1,0 +1,11 @@
+{
+    "hostname_systemMAC": {
+        "host":"hostname_mac",
+        "interfaces":{
+            "Ethernet1":{
+                "remote_host":"remote_hostname_remote_system_mac",
+                "remote_interface":"remote_interface"
+            }
+        }
+    }
+}
