@@ -1,1 +1,5 @@
-/project
+!/clab/configs/
+/clab/configs/*
+!/clab/overrideconfigs/
+/clab/overrideconfigs/*
+/clab

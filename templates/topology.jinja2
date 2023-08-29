@@ -5,7 +5,7 @@
 # -------------------------------------------------------------
 
 #https://containerlab.dev/manual/topo-def-file/#name
-name: L2LS
+name: network_model
 
 #https://containerlab.dev/manual/topo-def-file/#prefix
 prefix: ""
@@ -25,8 +25,6 @@ topology:
   kinds:
     ceos:
       image: ceos:4.29.1F
-    linux:
-      image: mitchv85/ohv-host
 
   nodes:
 
@@ -40,7 +38,7 @@ topology:
     graphite:
       kind: linux
       image: netreplica/graphite
-      mgmt-ipv4: 172.100.100.109
+      mgmt-ipv4: 172.100.100.10
       env:
         HOST_CONNECTION: ${SSH_CONNECTION}
       binds:
@@ -61,12 +59,17 @@ topology:
 {% for node in nodes %}
     {{node}}:
       kind: ceos
-      mgmt-ipv4: 172.100.100.10{{loop.index}}
+      mgmt-ipv4: 172.100.100.{{loop.index + 10}}
       startup-config: configs/{{node}}.cfg
+      binds:
+        - override_configs/{{node}}.cfg:/mnt/flash/{{node}}.cfg:ro
       ports:
-        - '2200{{loop.index}}:22'
-        - '800{{loop.index}}:80'
-        - '4430{{loop.index}}:443'
+        - '{{loop.index + 12010}}:22'
+        - '{{loop.index + 18010}}:80'
+        - '{{loop.index + 14010}}:443'
+      exec:
+        - Cli -p 15 -c 'copy {{node}}.cfg running-config'
+        - Cli -p 15 -c 'write memory'
       labels:
         graph-level: 1
         graph-icon: switch
